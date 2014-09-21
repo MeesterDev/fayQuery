@@ -24,7 +24,7 @@ $.$ = function(el, m) {
 	return new $.CustomList(r);
 }
 
-//Alas, normal datasets are supported only in IE11+, so we still have some code for older browsers
+//Alas, normal datasets are supported only in IE11+, so we still have some code for older browsers (it's rather lame that even in 2013 / 2014 we still have to write custom stuff for IE)
 $.createDataSet = function(el) { //generate the dataset (just an object, not a string map)
 	var r = {}
 	for (var i = 0; i < el.attributes.length; i++) {
@@ -260,8 +260,9 @@ $.Request = function(url, method, data, doneHandler, failedHandler, finalFailedH
 	if (typeof uploadProgressHandler === 'function') {
 		this.xhr.upload.addEventListener("progress", uploadProgressHandler);
 	}
-	if (typeof uploadHandler === 'function') {
-		this.xhr.upload.addEventListener("progress", uploadHandler);
+
+	if (typeof progressHandler === 'function') {
+		this.xhr.addEventListener("progress", progressHandler);
 	}
 	
 	if (typeof callBeforeSend === "function") {
@@ -296,8 +297,9 @@ $.Request.prototype.resend = function(url, method, data, doneHandler, failedHand
 	if (typeof uploadProgressHandler === 'function') {
 		this.xhr.upload.addEventListener("progress", uploadProgressHandler);
 	}
-	if (typeof uploadHandler === 'function') {
-		this.xhr.upload.addEventListener("progress", uploadHandler);
+
+	if (typeof progressHandler === 'function') {
+		this.xhr.addEventListener("progress", progressHandler);
 	}
 
 	if (typeof callBeforeSend === "function") {
