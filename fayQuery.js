@@ -78,6 +78,7 @@ $.CustomList.prototype.setStyle = function(s) {
 			}
 		}
 	}
+	return this;
 }
 
 $.CustomList.prototype.setInnerHTML = function(s) {
