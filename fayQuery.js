@@ -66,6 +66,13 @@ $.CustomList.prototype.set = function(p, v) {
 	return this;
 }
 
+$.CustomList.prototype.append = function(p, v) {
+	for (var i = 0; i < this.length; i++) {
+		this[i][p] = this[i][p] + v;
+	}
+	return this;
+}
+
 $.CustomList.prototype.setStyle = function(s) {
 	if ((s instanceof String) || (typeof s === "string")) {
 		for (var i = 0; i < this.length; i++) {
