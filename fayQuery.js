@@ -57,9 +57,17 @@ $.CustomList = function(list) {
 /* DEFAULT MANIPULATION FUNCTIONS */
 //Probably something like Chrome 1+, Firefox 1+, IE9+, Opera 7+, Safari 1+
 
-$.CustomList.prototype.get = function(p) { //Returns the property for the first item in the NodeList (regardless of whether it is defined or not)
+$.CustomList.prototype.get = function(p) { //Returns the property for the first item in the list (regardless of whether it is defined or not)
 	if (this.length > 0) {
 		return this[0][p];
+	} else {
+		return undefined;
+	}
+}
+
+$.CustomList.prototype.getAttribute = function(p) { //Returns the attribute for the first item in the list (regardless of whether it is defined or not)
+	if (this.length > 0) {
+		return this[0].getAttribute(p);
 	} else {
 		return undefined;
 	}
