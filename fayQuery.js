@@ -94,6 +94,14 @@ $.CustomList.prototype.append = function(p, v) {
 	return this;
 }
 
+$.CustomList.prototype.appendAttribute = function(p, v) {
+	for (var i = 0; i < this.length; i++) {
+		var cv = this[i].getAttribute(v);
+		this[i].setAttribute(p, (typeof cv === 'string') ? cv + v : v);
+	}
+	return this;
+}
+
 $.CustomList.prototype.setStyle = function(s) {
 	if ((s instanceof String) || (typeof s === "string")) {
 		for (var i = 0; i < this.length; i++) {
