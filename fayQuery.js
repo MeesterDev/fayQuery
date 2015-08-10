@@ -89,7 +89,8 @@ $.CustomList.prototype.setAttribute = function(p, v) {
 
 $.CustomList.prototype.append = function(p, v) {
 	for (var i = 0; i < this.length; i++) {
-		this[i][p] = this[i][p] + v;
+		var cv = this[i][p]
+		this[i][p] = (typeof cv === 'undefined') ? v : cv + v;
 	}
 	return this;
 }
@@ -226,7 +227,7 @@ $.CustomList.prototype.run = function(f) {
 }
 
 $.CustomList.prototype.each = function(f) {
-	var args = Array.prototype.slice.call(arguments, 1), r;
+	var args = Array.prototype.slice.call(arguments, 1);
 	for (var i = 0; i < this.length; i++) {
 		if (f.apply(this[i], args) === false) {
 			break;
