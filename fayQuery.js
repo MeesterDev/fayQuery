@@ -11,6 +11,9 @@ function $(m) {
 
 $.$ = function(el, m) {
 	if (m instanceof HTMLElement) {
+		if (!m.dataset) {
+			m.dataset = $.createDataSet(m);
+		}
 		return new $.CustomList([m]);
 	} else if ((m instanceof Array) || (m instanceof HTMLCollection) || (m instanceof NodeList)) {
 		return new $.CustomList(m);
@@ -24,7 +27,7 @@ $.$ = function(el, m) {
 	return new $.CustomList(r);
 }
 
-//Alas, normal datasets are supported only in IE11+, so we still have some code for older browsers (it's rather lame that even in 2013 / 2014 we still have to write custom stuff for IE)
+//Alas, normal datasets are supported only in IE11+, so we still have some code for older browsers (it's rather lame that even in 2013-2015 we still have to write custom stuff for IE)
 $.createDataSet = function(el) { //generate the dataset (just an object, not a string map)
 	var r = {}
 	for (var i = 0; i < el.attributes.length; i++) {
@@ -41,6 +44,9 @@ $.createDataSet = function(el) { //generate the dataset (just an object, not a s
 	return r;
 }
 
+/**
+ * @constructor
+ */
 $.CustomList = function(list) {
 	for (var i = 0; i < list.length; i++) {
 		this[i] = list[i];
@@ -233,8 +239,13 @@ $.toQueryString = function(obj) {
 	return parts.join('&');
 }
 
-$.Request = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler) {
+$.Request = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout) {
 	this.xhr = new XMLHttpRequest();
+
+	if (typeof timeout === 'number') {
+		this.xhr.timeout = timeout;
+	}
+
 	this.xhr.open(method, url, true);
 
 	if (typeof data === 'object') {
@@ -258,7 +269,7 @@ $.Request = function(url, method, data, doneHandler, failedHandler, finalFailedH
 			} else if (typeof failedHandler === "function") {
 				failedHandler(e, _this.xhr);
 			} else if (failedHandler > 0) {
-				_this.resend(url, method, data, doneHandler, failedHandler-1, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler);
+				_this.resend(url, method, data, doneHandler, failedHandler-1, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout);
 			} else {
 				finalFailedHandler(e, _this.xhr);
 			}
@@ -283,8 +294,13 @@ $.Request.prototype.abort = function() {
 	this.xhr.abort();
 }
 
-$.Request.prototype.resend = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler) {
+$.Request.prototype.resend = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout) {
 	this.xhr = new XMLHttpRequest();
+	
+	if (typeof timeout === 'number') {
+		this.xhr.timeout = timeout;
+	}
+
 	this.xhr.open(method, url, true);
 
 	var _this = this;
@@ -295,7 +311,7 @@ $.Request.prototype.resend = function(url, method, data, doneHandler, failedHand
 			} else if (typeof failedHandler === "function") {
 				failedHandler(e, _this.xhr);
 			} else if (failedHandler > 0) {
-				_this.resend(url, method, data, doneHandler, failedHandler-1, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler);
+				_this.resend(url, method, data, doneHandler, failedHandler-1, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout);
 			} else {
 				finalFailedHandler(e, _this.xhr);
 			}
