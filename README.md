@@ -5,7 +5,7 @@ fayQuery is a small library that I created for a learning project (a small WebGL
 To use fayQuery, simply put the fayQuery.js or fayQuery.min.js file somewhere in your project.
 
 ## Requirements
-fayQuery has very limited cross-browser code; it was initially written for a WebGL based game, which supported most things we needed.
+fayQuery has very limited cross-browser code; it was initially written for a WebGL based game, which supported most things I needed.
 The main requirement is the existence of querySelectorAll() and the support of any selectors you want to use. Depending on the latter, IE8 may be in or out.
 Some specific functions require newer versions of browsers.
 
