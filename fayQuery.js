@@ -252,6 +252,10 @@ $.CustomList.prototype.getText = function() {
 //Chrome 1+, Firefox 1+, IE7+, Opera, Safari 1.2+
 //with FormData or HTMLFormElement: Chrome 6+, Firefox 4+, IE10+, Opera 12+, Safari?
 
+$.doRequest = function() {
+	return new $.Request(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9]);
+}
+
 $.toQueryString = function(obj) {
 	var parts = [];
 	for (var property in obj) {
