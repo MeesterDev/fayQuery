@@ -5,10 +5,12 @@
 
 /* CORE */
 
+/** @export */
 function $(m) {
 	return $.$(document, m);
 }
 
+/** @export */
 $.$ = function(el, m) {
 	if (m instanceof HTMLElement) {
 		if (!m.dataset) {
@@ -44,9 +46,7 @@ $.createDataSet = function(el) { //generate the dataset (just an object, not a s
 	return r;
 }
 
-/**
- * @constructor
- */
+/** @constructor */
 $.CustomList = function(list) {
 	for (var i = 0; i < list.length; i++) {
 		this[i] = list[i];
@@ -57,6 +57,7 @@ $.CustomList = function(list) {
 /* DEFAULT MANIPULATION FUNCTIONS */
 //Probably something like Chrome 1+, Firefox 1+, IE9+, Opera 7+, Safari 1+
 
+/** @export */
 $.CustomList.prototype.get = function(p) { //Returns the property for the first item in the list (regardless of whether it is defined or not)
 	if (this.length > 0) {
 		return this[0][p];
@@ -65,6 +66,7 @@ $.CustomList.prototype.get = function(p) { //Returns the property for the first 
 	}
 }
 
+/** @export */
 $.CustomList.prototype.getAttribute = function(p) { //Returns the attribute for the first item in the list (regardless of whether it is defined or not)
 	if (this.length > 0) {
 		return this[0].getAttribute(p);
@@ -73,6 +75,7 @@ $.CustomList.prototype.getAttribute = function(p) { //Returns the attribute for 
 	}
 }
 
+/** @export */
 $.CustomList.prototype.set = function(p, v) {
 	for (var i = 0; i < this.length; i++) {
 		this[i][p] = v;
@@ -80,6 +83,7 @@ $.CustomList.prototype.set = function(p, v) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.setAttribute = function(p, v) {
 	for (var i = 0; i < this.length; i++) {
 		this[i].setAttribute(p, v);
@@ -87,6 +91,7 @@ $.CustomList.prototype.setAttribute = function(p, v) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.append = function(p, v) {
 	for (var i = 0; i < this.length; i++) {
 		var cv = this[i][p]
@@ -95,6 +100,7 @@ $.CustomList.prototype.append = function(p, v) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.appendAttribute = function(p, v) {
 	for (var i = 0; i < this.length; i++) {
 		var cv = this[i].getAttribute(v);
@@ -103,6 +109,7 @@ $.CustomList.prototype.appendAttribute = function(p, v) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.setStyle = function(s) {
 	if ((s instanceof String) || (typeof s === "string")) {
 		for (var i = 0; i < this.length; i++) {
@@ -118,6 +125,7 @@ $.CustomList.prototype.setStyle = function(s) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.setInnerHTML = function(s) {
 	for (var i = 0; i < this.length; i++) {
 		this[i].innerHTML = s;
@@ -125,6 +133,7 @@ $.CustomList.prototype.setInnerHTML = function(s) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.addEventListener = function() {
 	for (var i = 0; i < this.length; i++) {
 		this[i].addEventListener(arguments[0], arguments[1], arguments[2], arguments[3]);
@@ -132,6 +141,7 @@ $.CustomList.prototype.addEventListener = function() {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.removeEventListener = function() {
 	for (var i = 0; i < this.length; i++) {
 		this[i].removeEventListener(arguments[0], arguments[1], arguments[2], arguments[3]);
@@ -145,6 +155,7 @@ $.remove = function(el) {
 	}
 }
 
+/** @export */
 $.CustomList.prototype.remove = function() {
 	for (var i = 0; i < this.length; i++) {
 		$.remove(this[i]);
@@ -157,6 +168,7 @@ $.hasClass = function(el, c) {
 	return el.className.search(new RegExp('\\b'+c+'\\b', "g")) != -1;
 }
 
+/** @export */
 $.CustomList.prototype.hasClass = function(c) {
 	for (var i = 0; i < this.length; i++) {
 		if ($.hasClass(this[i], c)) {
@@ -167,6 +179,7 @@ $.CustomList.prototype.hasClass = function(c) {
 	return false;
 }
 
+/** @export */
 $.CustomList.prototype.allHaveClass = function(c) {
 	for (var i = 0; i < this.length; i++) {
 		if (!$.hasClass(this[i], c)) {
@@ -183,6 +196,7 @@ $.addClass = function(el, c) {
 	}
 }
 
+/** @export */
 $.CustomList.prototype.addClass = function(c) {
 	for (var i = 0; i < this.length; i++) {
 		$.addClass(this[i], c);
@@ -194,6 +208,7 @@ $.removeClass = function(el, c) {
 	el.className = el.className.replace(new RegExp(' ?\\b'+c+'\\b', 'g'), ''); 
 }
 
+/** @export */
 $.CustomList.prototype.removeClass = function(c) {
 	for (var i=0; i < this.length; i++) {
 		$.removeClass(this[i], c);
@@ -209,6 +224,7 @@ $.toggleClass = function(el, c) {
 	}
 }
 
+/** @export */
 $.CustomList.prototype.toggleClass = function(c) {
 	for (var i=0; i < this.length; i++) {
 		$.toggleClass(this[i], c);
@@ -216,6 +232,7 @@ $.CustomList.prototype.toggleClass = function(c) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.run = function(f) {
 	var args = Array.prototype.slice.call(arguments, 1), r;
 	args.push(0);
@@ -226,6 +243,7 @@ $.CustomList.prototype.run = function(f) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.each = function(f) {
 	var args = Array.prototype.slice.call(arguments, 1);
 	for (var i = 0; i < this.length; i++) {
@@ -240,6 +258,7 @@ $.getText = function(el) {
 	return el.innerText || (document.createTextNode(el.innerHTML.replace(/<br>/g, String.fromCharCode(13, 10)))).textContent;
 }
 
+/** @export */
 $.CustomList.prototype.getText = function() {
 	if (this.length > 0) {
 		return $.getText(this[0]);
@@ -252,6 +271,7 @@ $.CustomList.prototype.getText = function() {
 //Chrome 1+, Firefox 1+, IE7+, Opera, Safari 1.2+
 //with FormData or HTMLFormElement: Chrome 6+, Firefox 4+, IE10+, Opera 12+, Safari?
 
+/** @export */
 $.doRequest = function() {
 	return new $.Request(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9]);
 }
@@ -267,6 +287,7 @@ $.toQueryString = function(obj) {
 	return parts.join('&');
 }
 
+/** @constructor */
 $.Request = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout) {
 	this.xhr = new XMLHttpRequest();
 
@@ -318,6 +339,7 @@ $.Request = function(url, method, data, doneHandler, failedHandler, finalFailedH
 	this.xhr.send(data);
 }
 
+/** @export */
 $.Request.prototype.abort = function() {
 	this.xhr.abort();
 }
