@@ -5,7 +5,7 @@ fayQuery is a small library that I created for a learning project (a small WebGL
 To use fayQuery, simply put the fayQuery.js or fayQuery.min.js file somewhere in your project.
 
 ## Requirements
-fayQuery has very limited cross-browser code; it was initially written for a WebGL based game, which supported most things I needed.
+fayQuery has very limited cross-browser code; it was initially written for a WebGL based game, which means the browser supported most things I needed.
 The main requirement is the existence of querySelectorAll() and the support of any selectors you want to use. Depending on the latter, IE8 may be in or out.
 Some specific functions require newer versions of browsers.
 
@@ -35,13 +35,13 @@ Returns undefined if the list is empty.
 Sets the value as a property for all items in the list.
 
 #### fayQuery list: .setAttribute(attributeName, value)
-Sets the value as a attribute for all items in the list. Will not whether the elements in the list have the setAttribute() method implemented.
+Sets the value as a attribute for all items in the list. Will not check whether the elements in the list have the setAttribute() method implemented.
 
 #### fayQuery list: .append(propertyName, value)
 Sets or appends the value as a property for all items in the list.
 
 #### fayQuery list: .appendAttribute(attributeName, value)
-Sets or appends the value as a attribute for all items in the list. Will not whether the elements in the list have the setAttribute() method implemented.
+Sets or appends the value as a attribute for all items in the list. Will not check whether the elements in the list have the setAttribute() method implemented.
 
 #### fayQuery list: .setStyle(properties)
 Sets the styles defined in properties.
@@ -115,7 +115,7 @@ Returns the textual contenf of the first item of the list. Returns undefined if 
 
 ### Request
 #### $.Request(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout)
-Executes an XHR. The arguments are as follows:
+Returns a new $.Request object. The arguments are as follows:
 * url: the url to get/post/....
 * method: the method to use for the request
 * data: any data to use for the XHR. May be a plain object, FormData object or HTMLFormElement. Should be used for post requests.
@@ -129,6 +129,12 @@ Executes an XHR. The arguments are as follows:
 
 For any functionality used, it is assumed the browser support it. The main features which may be unavailable are the upload progress and timeout functionality.
 Returns a fayQuery request.
+
+#### $.doRequest(...)
+Shortcut for
+```
+new $.Request(...);
+```
 
 #### fayQuery request: .abort()
 Aborts the request. Any event handling is left to the browser.
