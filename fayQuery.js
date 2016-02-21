@@ -5,12 +5,17 @@
 
 /* CORE */
 
+/** @export */
 function $(m) {
 	return $.$(document, m);
 }
 
+/** @export */
 $.$ = function(el, m) {
 	if (m instanceof HTMLElement) {
+		if (!m.dataset) {
+			m.dataset = $.createDataSet(m);
+		}
 		return new $.CustomList([m]);
 	} else if ((m instanceof Array) || (m instanceof HTMLCollection) || (m instanceof NodeList)) {
 		return new $.CustomList(m);
@@ -24,7 +29,7 @@ $.$ = function(el, m) {
 	return new $.CustomList(r);
 }
 
-//Alas, normal datasets are supported only in IE11+, so we still have some code for older browsers (it's rather lame that even in 2013 / 2014 we still have to write custom stuff for IE)
+//Alas, normal datasets are supported only in IE11+, so we still have some code for older browsers (it's rather lame that even in 2013-2015 we still have to write custom stuff for IE)
 $.createDataSet = function(el) { //generate the dataset (just an object, not a string map)
 	var r = {}
 	for (var i = 0; i < el.attributes.length; i++) {
@@ -41,6 +46,7 @@ $.createDataSet = function(el) { //generate the dataset (just an object, not a s
 	return r;
 }
 
+/** @constructor */
 $.CustomList = function(list) {
 	for (var i = 0; i < list.length; i++) {
 		this[i] = list[i];
@@ -51,7 +57,8 @@ $.CustomList = function(list) {
 /* DEFAULT MANIPULATION FUNCTIONS */
 //Probably something like Chrome 1+, Firefox 1+, IE9+, Opera 7+, Safari 1+
 
-$.CustomList.prototype.get = function(p) { //Returns the property for the first item in the NodeList (regardless of whether it is defined or not)
+/** @export */
+$.CustomList.prototype.get = function(p) { //Returns the property for the first item in the list (regardless of whether it is defined or not)
 	if (this.length > 0) {
 		return this[0][p];
 	} else {
@@ -59,6 +66,16 @@ $.CustomList.prototype.get = function(p) { //Returns the property for the first 
 	}
 }
 
+/** @export */
+$.CustomList.prototype.getAttribute = function(p) { //Returns the attribute for the first item in the list (regardless of whether it is defined or not)
+	if (this.length > 0) {
+		return this[0].getAttribute(p);
+	} else {
+		return undefined;
+	}
+}
+
+/** @export */
 $.CustomList.prototype.set = function(p, v) {
 	for (var i = 0; i < this.length; i++) {
 		this[i][p] = v;
@@ -66,13 +83,33 @@ $.CustomList.prototype.set = function(p, v) {
 	return this;
 }
 
-$.CustomList.prototype.append = function(p, v) {
+/** @export */
+$.CustomList.prototype.setAttribute = function(p, v) {
 	for (var i = 0; i < this.length; i++) {
-		this[i][p] = this[i][p] + v;
+		this[i].setAttribute(p, v);
 	}
 	return this;
 }
 
+/** @export */
+$.CustomList.prototype.append = function(p, v) {
+	for (var i = 0; i < this.length; i++) {
+		var cv = this[i][p]
+		this[i][p] = (typeof cv === 'undefined') ? v : cv + v;
+	}
+	return this;
+}
+
+/** @export */
+$.CustomList.prototype.appendAttribute = function(p, v) {
+	for (var i = 0; i < this.length; i++) {
+		var cv = this[i].getAttribute(v);
+		this[i].setAttribute(p, (typeof cv === 'string') ? cv + v : v);
+	}
+	return this;
+}
+
+/** @export */
 $.CustomList.prototype.setStyle = function(s) {
 	if ((s instanceof String) || (typeof s === "string")) {
 		for (var i = 0; i < this.length; i++) {
@@ -88,6 +125,7 @@ $.CustomList.prototype.setStyle = function(s) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.setInnerHTML = function(s) {
 	for (var i = 0; i < this.length; i++) {
 		this[i].innerHTML = s;
@@ -95,6 +133,7 @@ $.CustomList.prototype.setInnerHTML = function(s) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.addEventListener = function() {
 	for (var i = 0; i < this.length; i++) {
 		this[i].addEventListener(arguments[0], arguments[1], arguments[2], arguments[3]);
@@ -102,6 +141,7 @@ $.CustomList.prototype.addEventListener = function() {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.removeEventListener = function() {
 	for (var i = 0; i < this.length; i++) {
 		this[i].removeEventListener(arguments[0], arguments[1], arguments[2], arguments[3]);
@@ -115,6 +155,7 @@ $.remove = function(el) {
 	}
 }
 
+/** @export */
 $.CustomList.prototype.remove = function() {
 	for (var i = 0; i < this.length; i++) {
 		$.remove(this[i]);
@@ -127,6 +168,7 @@ $.hasClass = function(el, c) {
 	return el.className.search(new RegExp('\\b'+c+'\\b', "g")) != -1;
 }
 
+/** @export */
 $.CustomList.prototype.hasClass = function(c) {
 	for (var i = 0; i < this.length; i++) {
 		if ($.hasClass(this[i], c)) {
@@ -137,6 +179,7 @@ $.CustomList.prototype.hasClass = function(c) {
 	return false;
 }
 
+/** @export */
 $.CustomList.prototype.allHaveClass = function(c) {
 	for (var i = 0; i < this.length; i++) {
 		if (!$.hasClass(this[i], c)) {
@@ -153,6 +196,7 @@ $.addClass = function(el, c) {
 	}
 }
 
+/** @export */
 $.CustomList.prototype.addClass = function(c) {
 	for (var i = 0; i < this.length; i++) {
 		$.addClass(this[i], c);
@@ -164,6 +208,7 @@ $.removeClass = function(el, c) {
 	el.className = el.className.replace(new RegExp(' ?\\b'+c+'\\b', 'g'), ''); 
 }
 
+/** @export */
 $.CustomList.prototype.removeClass = function(c) {
 	for (var i=0; i < this.length; i++) {
 		$.removeClass(this[i], c);
@@ -179,6 +224,7 @@ $.toggleClass = function(el, c) {
 	}
 }
 
+/** @export */
 $.CustomList.prototype.toggleClass = function(c) {
 	for (var i=0; i < this.length; i++) {
 		$.toggleClass(this[i], c);
@@ -186,6 +232,7 @@ $.CustomList.prototype.toggleClass = function(c) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.run = function(f) {
 	var args = Array.prototype.slice.call(arguments, 1), r;
 	args.push(0);
@@ -196,8 +243,9 @@ $.CustomList.prototype.run = function(f) {
 	return this;
 }
 
+/** @export */
 $.CustomList.prototype.each = function(f) {
-	var args = Array.prototype.slice.call(arguments, 1), r;
+	var args = Array.prototype.slice.call(arguments, 1);
 	for (var i = 0; i < this.length; i++) {
 		if (f.apply(this[i], args) === false) {
 			break;
@@ -210,6 +258,7 @@ $.getText = function(el) {
 	return el.innerText || (document.createTextNode(el.innerHTML.replace(/<br>/g, String.fromCharCode(13, 10)))).textContent;
 }
 
+/** @export */
 $.CustomList.prototype.getText = function() {
 	if (this.length > 0) {
 		return $.getText(this[0]);
@@ -222,6 +271,11 @@ $.CustomList.prototype.getText = function() {
 //Chrome 1+, Firefox 1+, IE7+, Opera, Safari 1.2+
 //with FormData or HTMLFormElement: Chrome 6+, Firefox 4+, IE10+, Opera 12+, Safari?
 
+/** @export */
+$.doRequest = function() {
+	return new $.Request(arguments[0], arguments[1], arguments[2], arguments[3], arguments[4], arguments[5], arguments[6], arguments[7], arguments[8], arguments[9]);
+}
+
 $.toQueryString = function(obj) {
 	var parts = [];
 	for (var property in obj) {
@@ -233,8 +287,14 @@ $.toQueryString = function(obj) {
 	return parts.join('&');
 }
 
-$.Request = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler) {
+/** @constructor */
+$.Request = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout) {
 	this.xhr = new XMLHttpRequest();
+
+	if (typeof timeout === 'number') {
+		this.xhr.timeout = timeout;
+	}
+
 	this.xhr.open(method, url, true);
 
 	if (typeof data === 'object') {
@@ -258,7 +318,7 @@ $.Request = function(url, method, data, doneHandler, failedHandler, finalFailedH
 			} else if (typeof failedHandler === "function") {
 				failedHandler(e, _this.xhr);
 			} else if (failedHandler > 0) {
-				_this.resend(url, method, data, doneHandler, failedHandler-1, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler);
+				_this.resend(url, method, data, doneHandler, failedHandler-1, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout);
 			} else {
 				finalFailedHandler(e, _this.xhr);
 			}
@@ -279,12 +339,18 @@ $.Request = function(url, method, data, doneHandler, failedHandler, finalFailedH
 	this.xhr.send(data);
 }
 
+/** @export */
 $.Request.prototype.abort = function() {
 	this.xhr.abort();
 }
 
-$.Request.prototype.resend = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler) {
+$.Request.prototype.resend = function(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout) {
 	this.xhr = new XMLHttpRequest();
+	
+	if (typeof timeout === 'number') {
+		this.xhr.timeout = timeout;
+	}
+
 	this.xhr.open(method, url, true);
 
 	var _this = this;
@@ -295,7 +361,7 @@ $.Request.prototype.resend = function(url, method, data, doneHandler, failedHand
 			} else if (typeof failedHandler === "function") {
 				failedHandler(e, _this.xhr);
 			} else if (failedHandler > 0) {
-				_this.resend(url, method, data, doneHandler, failedHandler-1, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler);
+				_this.resend(url, method, data, doneHandler, failedHandler-1, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout);
 			} else {
 				finalFailedHandler(e, _this.xhr);
 			}
