@@ -255,7 +255,7 @@ $.CustomList.prototype.each = function(f) {
 }
 
 $.getText = function(el) {
-	return el.innerText || (document.createTextNode(el.innerHTML.replace(/<br>/g, String.fromCharCode(13, 10)))).textContent;
+	return el.innerText || el.textContent;
 }
 
 /** @export */
