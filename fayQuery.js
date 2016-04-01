@@ -297,18 +297,14 @@ $.Request = function(url, method, data, doneHandler, failedHandler, finalFailedH
 
 	this.xhr.open(method, url, true);
 
-	if (typeof data === 'object') {
+	if (data instanceof HTMLFormElement) {
+		data = new FormData(data);
+	} else if (typeof data === 'object') {
 		if ((!FormData) || !(data instanceof FormData)) {
 			data = $.toQueryString(data);
 			this.xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 		}
-	} else if (data instanceof HTMLFormElement) {
-		if (FormData) {
-			data = new FormData(data);
-		} else {
-			console.error('I require FormData for this method.');
-		}
-	}
+	} // else assumme it is a string. If it is not, you're doing it wrong.
 
 	var _this = this;
 	this.xhr.onreadystatechange = function(e) {
