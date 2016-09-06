@@ -1,8 +1,8 @@
 ;(function(){
-	//Aimed at Chrome (last 2 to 3 years), firefox (last 2 to 3 years), IE9+, Opera 10+, Safari 4+
+	//Aimed at Chrome (last 2 to 3 years), firefox (last 2 to 3 years), IE10+, Opera 11.5+, Safari 5.1+
 	//Some specific functions may require a newer browser
 	//The idea behind this library is not to provide cross-browser stuff, but to make a very light library with as little extra code to support older browsers
-	//As of now the only cross-browser code present is the dataset generation for IE9 and 10.
+	//As of now the only cross-browser code present is the dataset generation for IE10.
 
 	/* CORE */
 
@@ -166,7 +166,7 @@
 	}
 
 	$.hasClass = function(el, c) {
-		return el.className.search(new RegExp('\\b'+c+'\\b', "g")) != -1;
+		return el.classList.contains(c);
 	}
 
 	/** @export */
@@ -192,9 +192,7 @@
 	}
 
 	$.addClass = function(el, c) {
-		if (el.className.search(new RegExp('\\b'+c+'\\b', "g")) == -1) {
-			el.className += " "+c;
-		}
+		el.classList.add(c);
 	}
 
 	/** @export */
@@ -206,7 +204,7 @@
 	}
 
 	$.removeClass = function(el, c) {
-		el.className = el.className.replace(new RegExp(' ?\\b'+c+'\\b', 'g'), ''); 
+		el.classList.remove(c); 
 	}
 
 	/** @export */
@@ -218,11 +216,7 @@
 	}
 
 	$.toggleClass = function(el, c) {
-		if ($.hasClass(el, c)) {
-			$.removeClass(el, c);
-		} else {
-			$.addClass(el, c);
-		}
+		el.classList.toggle(c);
 	}
 
 	/** @export */
@@ -305,7 +299,7 @@
 				data = $.toQueryString(data);
 				this.xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
 			}
-		} // else assumme it is a string. If it is not, you're doing it wrong.
+		} // else assumme it can be put directly into the XHR. If it is not, you're doing it wrong.
 
 		var _this = this;
 		this.xhr.onreadystatechange = function(e) {
