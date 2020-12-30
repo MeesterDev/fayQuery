@@ -1,130 +1,126 @@
 ;(function(){
 	/** @export */
-	function $(m) {
-		return $.$(document, m);
+	function $(sourceOrSelector) {
+		return $.$(document, sourceOrSelector);
 	}
 
 	/** @export */
-	$.$ = function(el, m) {
-		if (m instanceof HTMLElement) {
-			return new $.CustomList([m]);
-		} else if ((m instanceof Array) || (m instanceof HTMLCollection) || (m instanceof NodeList)) {
-			return new $.CustomList(m);
-		}
-		var r = el.querySelectorAll(m);
-		return new $.CustomList(r);
+	$.$ = function(base, sourceOrSelector) {
+        if (sourceOrSelector instanceof HTMLElement) {
+            return new $.FayQuery([sourceOrSelector]);
+        } else if (typeof sourceOrSelector === 'string') {
+            return new $.FayQuery(base.querySelectorAll(sourceOrSelector));
+        } else if (isArraySource(sourceOrSelector)) {
+			return new $.FayQuery(sourceOrSelector);
+		} else if ('from' in Array && typeof Array.from === 'function') {
+            return new $.FayQuery(Array.from(sourceOrSelector));
+        }
+
+        console.warn("Cannot reliably determine how to make a list from", sourceOrSelector);
+
+		return new $.FayQuery([]);
 	}
 
-	/** @constructor */
-	$.CustomList = function(list) {
+	function isArraySource(source) {
+		return Array.isArray(source)
+			|| (source instanceof HTMLCollection)
+			|| (source instanceof NodeList);
+	}
+
+	/**
+     * @constructor
+     * @export
+     */
+	$.FayQuery = function(list) {
 		for (var i = 0; i < list.length; i++) {
 			this[i] = list[i];
 		}
 		this.length = list.length;
 	}
 
-	/* DEFAULT MANIPULATION FUNCTIONS */
-
 	/** @export */
-	$.CustomList.prototype.get = function(p) { //Returns the property for the first item in the list (regardless of whether it is defined or not)
+	$.FayQuery.prototype.get = function(prop) {
 		if (this.length > 0) {
-			return this[0][p];
-		} else {
-			return undefined;
+			return this[0][prop];
 		}
+
+		return undefined;
 	}
 
 	/** @export */
-	$.CustomList.prototype.getAttribute = function(p) { //Returns the attribute for the first item in the list (regardless of whether it is defined or not)
+	$.FayQuery.prototype.getAttribute = function(name) {
 		if (this.length > 0) {
-			return this[0].getAttribute(p);
-		} else {
-			return undefined;
+			return this[0].getAttribute(name);
 		}
+
+		return undefined;
 	}
 
 	/** @export */
-	$.CustomList.prototype.set = function(p, v) {
+	$.FayQuery.prototype.set = function(prop, value) {
 		for (var i = 0; i < this.length; i++) {
-			this[i][p] = v;
+			this[i][prop] = value;
 		}
+
 		return this;
 	}
 
 	/** @export */
-	$.CustomList.prototype.setAttribute = function(p, v) {
+	$.FayQuery.prototype.setAttribute = function(prop, value) {
 		for (var i = 0; i < this.length; i++) {
-			this[i].setAttribute(p, v);
+			this[i].setAttribute(prop, value);
 		}
+
 		return this;
 	}
 
 	/** @export */
-	$.CustomList.prototype.append = function(p, v) {
-		for (var i = 0; i < this.length; i++) {
-			var cv = this[i][p]
-			this[i][p] = (typeof cv === 'undefined') ? v : cv + v;
-		}
+	$.FayQuery.prototype.setStyle = function(styleObject) {
+        for (var i = 0; i < this.length; i++) {
+            for (var prop in styleObject) {
+                if (styleObject.hasOwnProperty(prop)) {
+                    this[i].style[prop] = styleObject[prop];
+                }
+            }
+        }
+
 		return this;
 	}
 
 	/** @export */
-	$.CustomList.prototype.appendAttribute = function(p, v) {
-		for (var i = 0; i < this.length; i++) {
-			var cv = this[i].getAttribute(v);
-			this[i].setAttribute(p, (typeof cv === 'string') ? cv + v : v);
-		}
-		return this;
-	}
-
-	/** @export */
-	$.CustomList.prototype.setStyle = function(s) {
-		if ((s instanceof String) || (typeof s === "string")) {
-			for (var i = 0; i < this.length; i++) {
-				this[i].style.cssText += ";" + s;
-			}
-		} else {
-			for (var i = 0; i < this.length; i++) {
-				for (var p in s) {
-					this[i].style[p] = s[p];
-				}
-			}
-		}
-		return this;
-	}
-
-	/** @export */
-	$.CustomList.prototype.setInnerHTML = function(s) {
+	$.FayQuery.prototype.setInnerHTML = function(s) {
 		for (var i = 0; i < this.length; i++) {
 			this[i].innerHTML = s;
 		}
+
 		return this;
 	}
 
 	/** @export */
-	$.CustomList.prototype.addEventListener = function() {
+	$.FayQuery.prototype.addEventListener = function() {
 		for (var i = 0; i < this.length; i++) {
-			this[i].addEventListener(arguments[0], arguments[1], arguments[2], arguments[3]);
+            this[i].addEventListener.apply(this[i], arguments);
 		}
 		return this;
 	}
 
 	/** @export */
-	$.CustomList.prototype.removeEventListener = function() {
+	$.FayQuery.prototype.removeEventListener = function() {
 		for (var i = 0; i < this.length; i++) {
-			this[i].removeEventListener(arguments[0], arguments[1], arguments[2], arguments[3]);
+            this[i].removeEventListener.apply(this[i], arguments);
 		}
 		return this;
 	}
 
-	$.remove = function(el) {
-		if (el.parentNode) {
-			el.parentNode.removeChild(el);
+    /** @export */
+	$.remove = function(element) {
+		if (element.parentNode) {
+			element.parentNode.removeChild(element);
 		}
 	}
 
 	/** @export */
-	$.CustomList.prototype.remove = function() {
+	$.FayQuery.prototype.remove = function() {
 		for (var i = 0; i < this.length; i++) {
 			$.remove(this[i]);
 		}
@@ -132,14 +128,15 @@
 		return this;
 	}
 
-	$.hasClass = function(el, c) {
-		return el.classList.contains(c);
+    /** @export */
+	$.hasClass = function(element, className) {
+		return element.classList.contains(className);
 	}
 
 	/** @export */
-	$.CustomList.prototype.hasClass = function(c) {
+	$.FayQuery.prototype.hasClass = function(className) {
 		for (var i = 0; i < this.length; i++) {
-			if ($.hasClass(this[i], c)) {
+			if ($.hasClass(this[i], className)) {
 				return true;
 			}
 		}
@@ -148,9 +145,9 @@
 	}
 
 	/** @export */
-	$.CustomList.prototype.allHaveClass = function(c) {
+	$.FayQuery.prototype.allHaveClass = function(className) {
 		for (var i = 0; i < this.length; i++) {
-			if (!$.hasClass(this[i], c)) {
+			if (!$.hasClass(this[i], className)) {
 				return false;
 			}
 		}
@@ -158,83 +155,80 @@
 		return true;
 	}
 
-	$.addClass = function(el, c) {
-		el.classList.add(c);
+    /** @export */
+	$.addClass = function(element, className) {
+		element.classList.add(className);
 	}
 
 	/** @export */
-	$.CustomList.prototype.addClass = function(c) {
+	$.FayQuery.prototype.addClass = function(className) {
 		for (var i = 0; i < this.length; i++) {
-			$.addClass(this[i], c);
+			$.addClass(this[i], className);
 		}
 		return this;
 	}
 
-	$.removeClass = function(el, c) {
-		el.classList.remove(c); 
+    /** @export */
+	$.removeClass = function(element, className) {
+		element.classList.remove(className);
 	}
 
 	/** @export */
-	$.CustomList.prototype.removeClass = function(c) {
+	$.FayQuery.prototype.removeClass = function(className) {
 		for (var i=0; i < this.length; i++) {
-			$.removeClass(this[i], c);
+			$.removeClass(this[i], className);
 		}
 		return this;
 	}
 
-	$.toggleClass = function(el, c) {
-		el.classList.toggle(c);
+    /** @export */
+	$.toggleClass = function(element, className) {
+        element.classList.toggle(className);
 	}
 
 	/** @export */
-	$.CustomList.prototype.toggleClass = function(c) {
+	$.FayQuery.prototype.toggleClass = function(className) {
 		for (var i=0; i < this.length; i++) {
-			$.toggleClass(this[i], c);
+			$.toggleClass(this[i], className);
 		}
 		return this;
 	}
 
 	/** @export */
-	$.CustomList.prototype.run = function(f) {
+	$.FayQuery.prototype.each = function(callback) {
 		var args = Array.prototype.slice.call(arguments, 1);
 		args.push(0);
+
 		for (var i = 0; i < this.length; i++) {
 			args[args.length-1] = i;
-			f.apply(this[i], args);
+            if (callback.apply(this[i], args) === false) {
+                break;
+            }
 		}
+
 		return this;
 	}
 
-	/** @export */
-	$.CustomList.prototype.each = function(f) {
-		var args = Array.prototype.slice.call(arguments, 1);
-		for (var i = 0; i < this.length; i++) {
-			if (f.apply(this[i], args) === false) {
-				break;
-			}
-		}
-		return this;
-	}
-
-	$.getText = function(el) {
-		return el.innerText || el.textContent;
+    /** @export */
+	$.getText = function(element) {
+		return element.innerText || element.textContent;
 	}
 
 	/** @export */
-	$.CustomList.prototype.getText = function() {
+	$.FayQuery.prototype.getText = function() {
 		if (this.length > 0) {
 			return $.getText(this[0]);
-		} else {
-			return undefined;
 		}
+
+		return undefined;
 	}
 
-	window.fayQuery = $;
+	window['fayQuery'] = $;
 	if (!('$' in window)) {
-		window.$ = $;
+		window['$'] = $;
 	}
 
-	window.getFayQuery = function() {
+	window['getFayQuery'] = function() {
 		return $;
 	}
 })();

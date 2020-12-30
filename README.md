@@ -37,12 +37,6 @@ Sets the value as a property for all items in the list.
 #### fayQuery list: .setAttribute(attributeName, value)
 Sets the value as a attribute for all items in the list. Will not check whether the elements in the list have the setAttribute() method implemented.
 
-#### fayQuery list: .append(propertyName, value)
-Sets or appends the value as a property for all items in the list.
-
-#### fayQuery list: .appendAttribute(attributeName, value)
-Sets or appends the value as a attribute for all items in the list. Will not check whether the elements in the list have the setAttribute() method implemented.
-
 #### fayQuery list: .setStyle(properties)
 Sets the styles defined in properties.
 The property-value pairs in the object will be added to the style object as property-value pairs.
@@ -53,8 +47,6 @@ Example object:
 	color: '#FFF'
 }
 ```
-
-Has some experimental for support for directly entering a CSS string. Do not use this, it may not be present in future versions.
 
 #### fayQuery list: .setInnerHTML(html)
 Sets the innerHTML of all elements in the list.
@@ -99,13 +91,9 @@ Adds the class to el if el does not have the given class. Otherwise removes it.
 #### fayQuery list: .toggleClass(class)
 Adds the class to any element int he list that does not have the given class. Removes it from the others.
 
-#### fayQuery list: .run(function, ...)
-Runs the function on each of the elements in the list. 'this' Will refer to the element within the function.
-Any extra arguments passed, will be passed to the called function. The current index within the list is passed as the final argument.
-
 #### fayQuery list: .each(function, ...)
 Runs the function on each of the elements in the list. 'this' Will refer to the element within the function.
-Any extra arguments passed, will be passed to the called function. If the function returns false, the function will not be called on any further elements.
+Any extra arguments passed, will be passed to the called function. The current index within the list is passed as the final argument. If the function returns false, the function will not be called on any further elements.
 
 #### $.getText(el)
 Returns the textual content of an element.
