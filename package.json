@@ -1,0 +1,11 @@
+{
+  "name": "fayquery",
+  "title": "fayQuery",
+  "description": "Simple and clean DOM operations in a small library.",
+  "version": "0.9.0-alpha.0",
+  "dependencies": {
+  },
+  "homepage": "https://meester.dev",
+  "bugs": "https://github.com/MeesterDev/fayQuery/issues",
+  "license": "MIT"
+}
