@@ -112,35 +112,3 @@ Returns the textual content of an element.
 
 #### fayQuery list: .getText()
 Returns the textual contenf of the first item of the list. Returns undefined if the list is empty. Does not check if the first item in the list is an actual element.
-
-### Request
-#### $.Request(url, method, data, doneHandler, failedHandler, finalFailedHandler, callBeforeSend, uploadProgressHandler, progressHandler, timeout)
-Returns a new $.Request object. The arguments are as follows:
-* url: the url to get/post/....
-* method: the method to use for the request
-* data: any data to use for the XHR. May be a plain object, FormData object or HTMLFormElement. Should be used for post requests.
-* doneHandler: a function to be called when the request has completed. Should have the signature function(onreadystatechangeEvent, xhrObject).
-* failedHandler: a function to be called when the request has failed. Should have the signature as above. May also be a number, in which case it is the maximum amount of retries.
-* finalFailedHandler: a function to be called when the request has failed (after it has been retried the given number of times).
-* callBeforeSend: a function that will be called right before sending. Should have the signature function(xhrObject, data). The data may be changed from the originally given data.
-* uploadProgressHandler: a function that will be bound to the progress event of the xhr upload.
-* progressHandler: a function that will be bound to the progress event of the xhr.
-* timeout: the timeout value to be given to the XHR.
-
-For any functionality used, it is assumed the browser support it. The main features which may be unavailable are the upload progress and timeout functionality.
-Returns a fayQuery request.
-
-#### $.doRequest(...)
-Shortcut for
-```
-new $.Request(...);
-```
-
-#### fayQuery request: .abort()
-Aborts the request. Any event handling is left to the browser.
-
-### Internal functions
-TODO: complete this section.
-#### fayQuery request: .resend()
-Resends the request. Accepts the same arguments as the constructor. Assumes the data object is already in the correct format.
-Future versions may ignore the given arguments and reuse the original arguments.
